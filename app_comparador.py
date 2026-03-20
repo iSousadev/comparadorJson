@@ -682,11 +682,14 @@ function analisar() {
   document.getElementById('upload-section').style.display = 'none';
   document.getElementById('loading').style.display = 'block';
 
-  const form = new FormData();
-  form.append('json_data', fileData);
-  if (txtData) form.append('txt_data', txtData);
+  const payload = { json_data: JSON.parse(fileData) };
+  if (txtData) payload.txt_data = txtData;
 
-  fetch('/analisar', { method: 'POST', body: form })
+  fetch('/analisar', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
   .then(r => r.json())
   .then(data => {
     dadosGlobal = data;
@@ -816,11 +819,11 @@ def index():
 @app.route("/analisar", methods=["POST"])
 def analisar():
     try:
-        json_str = request.form.get("json_data")
-        txt_str = request.form.get("txt_data", "")
-        if not json_str:
+        payload = request.get_json(force=True)
+        if not payload or "json_data" not in payload:
             return jsonify({"erro": "JSON não enviado"}), 400
-        data = json.loads(json_str)
+        data = payload["json_data"]
+        txt_str = payload.get("txt_data", "")
         anuladas_txt = parsear_txt(txt_str) if txt_str.strip() else None
         resultado = analisar_json(data, anuladas_txt)
         return jsonify(resultado)
