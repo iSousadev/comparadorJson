@@ -721,8 +721,10 @@ function renderizar(d) {
   document.getElementById('tab-count-branco').textContent = totalBranco;
 
   renderGrid('ok', d.ok);
-  // Funde anuladas + branco em um único grid, anuladas primeiro
-  renderGridBranco([...(d.anuladas || []), ...(d.branco || [])]);
+  // Funde anuladas + branco e reordena por pagina → coluna → questao
+  const fundido = [...(d.anuladas || []), ...(d.branco || [])];
+  fundido.sort((a, b) => a.pagina - b.pagina || a.coluna - b.coluna || a.questao - b.questao);
+  renderGridBranco(fundido);
 }
 
 function renderGrid(tipo, items) {
