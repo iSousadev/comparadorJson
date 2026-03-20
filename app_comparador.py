@@ -115,6 +115,10 @@ def analisar_json(data, anuladas_txt=None):
 
     total_paginas = len(pages)
 
+    ok_list.sort(key=lambda x: (x["pagina"], x["coluna"], x["questao"]))
+    anuladas_list.sort(key=lambda x: (x["pagina"], x["coluna"], x["questao"]))
+    branco_list.sort(key=lambda x: (x["pagina"], x["coluna"], x["questao"]))
+
     return {
         "arquivo": arquivo,
         "gabarito_id": gabarito_id,
