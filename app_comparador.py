@@ -525,8 +525,7 @@ HTML = """<!DOCTYPE html>
 <!-- UPLOAD -->
 <div class="upload-zone" id="upload-section">
   <div class="upload-title">Verificar Gabarito</div>
-  <div class="upload-sub">Carregue o graded_result.json gerado pelo processador junto com Comparador_Json_*.txt (opcional) para identificar anuladas por múltiplas marcações.</div>
-  
+  <div class="upload-sub">Carregue o graded_result.json gerado pelo processador e o Comparador_Json_*.txt para identificar anuladas com as letras
   </div>
 
   <div class="drop-area" id="drop-area" onclick="document.getElementById('file-input').click()">
