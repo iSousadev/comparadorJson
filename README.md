@@ -80,6 +80,6 @@ Este repositório já possui `vercel.json` e `api/index.py` para rodar o Flask c
 - `requirements.txt` Dependências Python
 - `vercel.json` Configuração do Vercel
 
-**É isso ai mesmo**
-**quero um emprego**
+**É isso ai mesmo**,
+**quero um emprego**,
 **Batatinha quando nasce**
