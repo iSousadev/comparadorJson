@@ -557,7 +557,6 @@ HTML = """<!DOCTYPE html>
 <div class="header">
   <span class="header-badge">OMR</span>
   <span class="header-title">Comparador de Gabaritos</span>
-  <span class="header-sub">CEST Santa Terezinha · v2.0</span>
 </div>
 
 <!-- UPLOAD -->
