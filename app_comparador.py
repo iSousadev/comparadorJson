@@ -494,7 +494,45 @@ HTML = """<!DOCTYPE html>
     font-size: 13px;
   }
 
-  /* SELECTED FILE */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface);
+    margin-top: 60px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-left {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .footer-left span {
+    color: var(--green);
+    font-weight: 700;
+  }
+  .footer-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .footer-link {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: white;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-link:hover { color: var(--purple); }
+  .footer-dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--border);
+  }
   .selected-file {
     display: none;
     background: var(--surface2);
@@ -519,14 +557,13 @@ HTML = """<!DOCTYPE html>
 <div class="header">
   <span class="header-badge">OMR</span>
   <span class="header-title">Comparador de Gabaritos</span>
-  <span class="header-sub" style="margin-left:16px;font-size:11px;color:var(--green)">Desenvolvido por iSousa | https://github.com/iSousadev </span>
+  <span class="header-sub">CEST Santa Terezinha · v2.0</span>
 </div>
 
 <!-- UPLOAD -->
 <div class="upload-zone" id="upload-section">
   <div class="upload-title">Verificar Gabarito</div>
-  <div class="upload-sub">Carregue o graded_result.json gerado pelo processador e o Comparador_Json_*.txt para identificar anuladas com as letras
-  </div>
+  <div class="upload-sub">// Carregue o graded_result.json gerado pelo processador</div>
 
   <div class="drop-area" id="drop-area" onclick="document.getElementById('file-input').click()">
     <span class="drop-icon">📄</span>
@@ -803,6 +840,15 @@ function resetar() {
   switchTab('ok');
 }
 </script>
+
+<footer class="footer">
+  <div class="footer-left">
+    Desenvolvido por <span><a class="footer-link" href="https://github.com/iSousadev" target="_blank">iSousadev</a></span> — 2026
+  </div>
+  <div class="footer-right">
+  </div>
+</footer>
+
 </body>
 </html>"""
 
