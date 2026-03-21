@@ -520,6 +520,7 @@ HTML = """<!DOCTYPE html>
   <span class="header-badge">OMR</span>
   <span class="header-title">Comparador de Gabaritos</span>
   <span class="header-sub">CEST Santa Terezinha · v2.0</span>
+  <span class="header-sub" style="margin-left:16px;font-size:11px;color:var(--green)">Desenvolvido por iSousa | https://github.com/iSousadev </span>
 </div>
 
 <!-- UPLOAD -->
