@@ -520,13 +520,14 @@ HTML = """<!DOCTYPE html>
   <span class="header-badge">OMR</span>
   <span class="header-title">Comparador de Gabaritos</span>
   <span class="header-sub">CEST Santa Terezinha · v2.0</span>
-  <span class="header-sub">Desenvolvido por iSousadev · https://github.com/iSousadev</span>
 </div>
 
 <!-- UPLOAD -->
 <div class="upload-zone" id="upload-section">
   <div class="upload-title">Verificar Gabarito</div>
-  <div class="upload-sub">// Carregue o graded_result.json gerado pelo processador</div>
+  <div class="upload-sub">Carregue o graded_result.json gerado pelo processador junto com Comparador_Json_*.txt (opcional) para identificar anuladas por múltiplas marcações.</div>
+  
+  </div>
 
   <div class="drop-area" id="drop-area" onclick="document.getElementById('file-input').click()">
     <span class="drop-icon">📄</span>
@@ -583,8 +584,12 @@ HTML = """<!DOCTYPE html>
       <div class="stat-label">Marcadas com sucesso</div>
       <div class="stat-value" id="stat-ok">0</div>
     </div>
+    <div class="stat-card stat-anuladas">
+      <div class="stat-label">Anuladas</div>
+      <div class="stat-value" id="stat-anuladas">0</div>
+    </div>
     <div class="stat-card stat-branco">
-      <div class="stat-label">Anuladas / Em branco</div>
+      <div class="stat-label">Em branco (Q1-40)</div>
       <div class="stat-value" id="stat-branco">0</div>
     </div>
     <div class="stat-card stat-info">
@@ -597,8 +602,11 @@ HTML = """<!DOCTYPE html>
     <button class="tab tab-ok active" onclick="switchTab('ok')">
       Marcadas <span class="count" id="tab-count-ok">0</span>
     </button>
+    <button class="tab tab-anuladas" onclick="switchTab('anuladas')">
+      Anuladas <span class="count" id="tab-count-anuladas">0</span>
+    </button>
     <button class="tab tab-branco" onclick="switchTab('branco')">
-      Anuladas / Em Branco <span class="count" id="tab-count-branco">0</span>
+      Em Branco <span class="count" id="tab-count-branco">0</span>
     </button>
   </div>
 
@@ -611,6 +619,9 @@ HTML = """<!DOCTYPE html>
 
   <div class="tab-panel active" id="panel-ok">
     <div class="cards-grid" id="grid-ok"></div>
+  </div>
+  <div class="tab-panel" id="panel-anuladas">
+    <div class="cards-grid" id="grid-anuladas"></div>
   </div>
   <div class="tab-panel" id="panel-branco">
     <div class="cards-grid" id="grid-branco"></div>
@@ -714,52 +725,31 @@ function renderizar(d) {
     `ID: ${d.gabarito_id} · ${d.total_paginas} páginas · gerado em ${d.gerado_em}`;
 
   document.getElementById('stat-ok').textContent = d.total_ok;
+  document.getElementById('stat-anuladas').textContent = d.total_anuladas;
+  document.getElementById('stat-branco').textContent = d.total_branco;
   document.getElementById('stat-paginas').textContent = d.total_paginas;
 
-  const totalBranco = d.total_anuladas + d.total_branco;
-  document.getElementById('stat-branco').textContent = totalBranco;
   document.getElementById('tab-count-ok').textContent = d.total_ok;
-  document.getElementById('tab-count-branco').textContent = totalBranco;
+  document.getElementById('tab-count-anuladas').textContent = d.total_anuladas;
+  document.getElementById('tab-count-branco').textContent = d.total_branco;
 
-  renderGrid('ok', d.ok);
-  // Funde anuladas + branco e reordena por pagina → coluna → questao
-  const fundido = [...(d.anuladas || []), ...(d.branco || [])];
-  fundido.sort((a, b) => a.pagina - b.pagina || a.coluna - b.coluna || a.questao - b.questao);
-  renderGridBranco(fundido);
+  renderGrid('ok', d.ok, 'ok');
+  renderGrid('anuladas', d.anuladas, 'anulada');
+  renderGrid('branco', d.branco, 'branco');
 }
 
-function renderGrid(tipo, items) {
+function renderGrid(tipo, items, badgeTipo) {
   const grid = document.getElementById('grid-' + tipo);
   if (!items || items.length === 0) {
     grid.innerHTML = '<div class="empty">Nenhum item nesta categoria.</div>';
     return;
   }
-  grid.innerHTML = items.map(item => `<div class="card" data-pagina="${item.pagina}" data-questao="${item.questao}" data-matricula="${item.matricula || ''}">
-    <div class="card-top">
-      <div class="card-questao">Q${item.questao}</div>
-      <span class="card-badge badge-ok">OK</span>
-    </div>
-    <div class="card-letter letter-ok">${item.letra}</div>
-    <div class="card-meta">
-      <span>Pág ${item.pagina} · Col ${item.coluna}</span>
-      <span>${item.matricula || '—'}</span>
-    </div>
-  </div>`).join('');
-}
+  const badge = badgeTipo === 'ok' ? 'OK' : badgeTipo === 'anulada' ? 'ANULADA' : 'BRANCO';
+  const badgeClass = `badge-${badgeTipo === 'anulada' ? 'anulada' : badgeTipo === 'branco' ? 'branco' : 'ok'}`;
+  const letterClass = `letter-${badgeTipo === 'anulada' ? 'anulada' : badgeTipo === 'branco' ? 'branco' : 'ok'}`;
 
-function renderGridBranco(items) {
-  const grid = document.getElementById('grid-branco');
-  if (!items || items.length === 0) {
-    grid.innerHTML = '<div class="empty">Nenhum item nesta categoria.</div>';
-    return;
-  }
-  // anuladas têm .letras, branco não têm
   grid.innerHTML = items.map(item => {
-    const isAnulada = item.letras !== undefined;
-    const badge = isAnulada ? 'ANULADA' : 'BRANCO';
-    const badgeClass = isAnulada ? 'badge-anulada' : 'badge-branco';
-    const letterClass = isAnulada ? 'letter-anulada' : 'letter-branco';
-    const display = isAnulada ? item.letras : '—';
+    const display = badgeTipo === 'ok' ? item.letra : badgeTipo === 'anulada' ? item.letras : '—';
     return `<div class="card" data-pagina="${item.pagina}" data-questao="${item.questao}" data-matricula="${item.matricula || ''}">
       <div class="card-top">
         <div class="card-questao">Q${item.questao}</div>
